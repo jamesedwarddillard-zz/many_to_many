@@ -81,9 +81,6 @@ class BreedTraits(Base):
     def __repr__(self):
         return "Trait: {}".format(self.name)
 
-#########################################################
-#   Add your code for BreedTraits object here			#
-#########################################################
 
 class Shelter(Base):
     __tablename__ = 'shelter'
@@ -242,9 +239,30 @@ if __name__ == "__main__":
     #################################################
     #  Now it's up to you to complete this script ! #
     #################################################
-    
-    # Add your code that adds breed traits and links breeds with traits
-    # here.
+    log.info('Creating new traits for the fun of it') 
+    fluffy = BreedTraits(name = "fluffy")
+    spotted = BreedTraits(name = "spotted")
+    fetch = BreedTraits(name = "fetch")
+    db_session.add_all([fluffy, spotted, fetch])
+    db_session.commit()
+
+    log.info('Retrieving golden retreiver and dalmatian breeds')
+    golden_retriever = db_session.query(Breed).filter_by(name = 'Golden Retriever').one()
+    dalmatian = db_session.query(Breed).filter_by(name = 'Dalmatian').one()
+
+    log.info('Attaching traits to breeds')
+    golden_retriever.traits.append(fluffy)
+    golden_retriever.traits.append(fetch)
+    dalmatian.traits.append(spotted)
+    dalmatian.traits.append(fetch)
+
+    breeds = db_session.query(Breed).all()
+    for b in breeds:
+        print "{}: {}".format(b.name, b.traits)
+
+
+
+
 
 
     #################################################
