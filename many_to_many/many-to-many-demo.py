@@ -62,6 +62,12 @@ class Breed(Base):
     def __repr__(self):
         return "{}: {}".format(self.name, self.species) 
 
+#creating a many to many association table for Breed and BreedTrait classes
+breed_breedtrait_table = Table('breed_breedtrait', Base.metadata,
+    Column('breed_id', Integer, ForeignKey('breed.id'), nullable = False),
+    Column('breedtrait_id', Integer, ForeignKey('breedtrait.id'), nullable = False))
+
+
 class BreedTraits(Base):
     """
     domain model for BreedTraits class
@@ -70,6 +76,7 @@ class BreedTraits(Base):
 
     id = Column(Integer, primary_key = True)
     name = Column(String, nullable = False)
+    breeds = relationship('Breed', secondary = breed_breedtrait_table, backref = 'traits')
 
     def __repr__(self):
         return "Trait: {}".format(self.name)
@@ -238,6 +245,7 @@ if __name__ == "__main__":
     
     # Add your code that adds breed traits and links breeds with traits
     # here.
+
 
     #################################################
     
