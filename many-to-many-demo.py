@@ -166,13 +166,16 @@ class Nicknames(Base):
     __tablename__ = 'nickname'
 
     __table_args__ = (
-            UniqueConstraint('named_pet', 'name_giver', name='person_pet_uniqueness_constraint'),
+            UniqueConstraint('pet_id', 'person_id', name='person_pet_uniqueness_constraint'),
         )
     id = Column(Integer, primary_key=True)
     nickname = Column(String, nullable = False)
 
-    named_pet = Column(Integer, ForeignKey('pet.id'), nullable = False)
-    name_giver = Column(Integer, ForeignKey('person.id'), nullable = False)
+    pet_id = Column(Integer, ForeignKey('pet.id'), nullable = False)
+    person_id = Column(Integer, ForeignKey('person.id'), nullable = False)
+
+    nicknamer = relationship('Person', backref='pet_nickname')
+    nicknamed = relationship('Pet', backref='given_nickname')
 
     def __repr__(self):
         return "Pet: {} - nickname: {}".format(self.pet.name, self.nickname)
