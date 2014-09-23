@@ -122,7 +122,7 @@ class Pet(Base):
         return "Pet:{}".format(self.name)
 
     def nickname(self):
-        return db_session.query(Nickname).filter_by(pet_id = self.id).all()
+        return db_session.query(Nicknames).filter_by(pet_id = self.id).all()
 
 
 class Person(Base):
@@ -163,22 +163,26 @@ class Person(Base):
         return "Person: {} {}".format(self.first_name, self.last_name) 
 
 class Nicknames(Base):
-    __tablename__ = 'nickname'
+    __tablename__ = 'pet_person_assocation'
 
     __table_args__ = (
-            UniqueConstraint('pet_id', 'person_id', name='person_pet_uniqueness_constraint'),
+        UniqueConstraint('pet_id', 'person_id', name = 'person_pet_uniqueness_constraint'),
         )
-    id = Column(Integer, primary_key=True)
-    nickname = Column(String, nullable = False)
+
+    id = Column(Integer, primary_key = True)
 
     pet_id = Column(Integer, ForeignKey('pet.id'), nullable = False)
     person_id = Column(Integer, ForeignKey('person.id'), nullable = False)
 
-    nicknamer = relationship('Person', backref='pet_nickname')
-    nicknamed = relationship('Pet', backref='given_nickname')
+    nickname = Column(String)
+
+    person = relationship('Person', backref = 'pet_associations')
+    pet = relationship('Pet', backref = 'person_associations')
 
     def __repr__(self):
-        return "Pet: {} - nickname: {}".format(self.pet.name, self.nickname)
+        return "{} says: {} calls me '{}'".format(self.pet.name, (self.person.first_name
+            + " " + self.person.last_name), self.nickname)
+
 
 
 ################################################################################
@@ -279,13 +283,11 @@ if __name__ == "__main__":
     for b in breeds:
         print "{}: {}".format(b.name, b.traits)
 
-    pets = db_session.query(Pet).all()
-    for pet in pets:
-        print "{}: {}".format(pet.name, pet.people)
+    log.info('Giving spot some nicknames')
+    tom.pet_associations.append(Nicknames(pet = spot, nickname = 'Sir Spot'))
+    sue.pet_associations.append(Nicknames(pet = spot, nickname = 'the 102nd Dalmatian'))
 
-
-
-
+    print spot.nickname()
 
 
     #################################################
