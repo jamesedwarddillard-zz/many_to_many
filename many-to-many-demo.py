@@ -255,10 +255,6 @@ if __name__ == "__main__":
     db_session.add_all([spot, goldie])
     db_session.commit()
 
-    assert tom in spot.people
-    spot.people.remove(tom)
-    assert spot not in tom.pets
-
     #################################################
     #  Now it's up to you to complete this script ! #
     #################################################
@@ -282,6 +278,10 @@ if __name__ == "__main__":
     breeds = db_session.query(Breed).all()
     for b in breeds:
         print "{}: {}".format(b.name, b.traits)
+
+    pets = db_session.query(Pet).all()
+    for pet in pets:
+        print "{}: {}".format(pet.name, pet.people)
 
 
 
